@@ -120,7 +120,7 @@ function AddImageScreen(){
 
 
     return(
-        <SafeAreaView style={{flex: 1 , backgroundColor: 'white'}}>
+        <SafeAreaView style={{flex: 1 , backgroundColor: '#FFFFFF'}}>
         <ScrollView>
             {/* ======================================== HEADER ========================================   */}
             <View style={{width:'100%', flexDirection:'row',marginVertical: 20,alignItems:'center',justifyContent:'space-between', paddingHorizontal: 30}}>
@@ -140,7 +140,7 @@ function AddImageScreen(){
                 {/*   Form add Image    */}
                 <View style={{marginTop: 0 , marginLeft: isTouchInput? 0: 30 ,alignItems: isTouchInput? "center": "flex-start"}}>
                     <Pressable onPress={()=>touchOpenInput()} 
-                        style={[styles.formInputContainer, { width: isTouchInput? "90%": "auto",}]}
+                        style={[styles.formInputContainer, { width: isTouchInput? "90%": "auto", borderWidth: isTouchInput? 1: 0}]}
                     >   
                         {/*  INPUT  */}
                         {

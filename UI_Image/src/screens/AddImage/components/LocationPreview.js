@@ -57,7 +57,7 @@ function LocationPreview(){
                 {/*     ------------------ Button Open Google Maps ------------------ */}
                 <TouchableOpacity onPress={()=> touchOpenInGGMap()} style={{height : '100%', width:'30%', 
                     alignItems:'center', justifyContent:'center', 
-                    borderTopLeftRadius:15,borderBottomLeftRadius: 15, 
+                    borderTopLeftRadius:14,borderBottomLeftRadius: 14, 
                     flexDirection:'row', backgroundColor:'#7834CF', 
                 }}>
                     <Text style={{color:'white', fontSize:16, fontWeight:'bold'}}> Open Maps </Text>
