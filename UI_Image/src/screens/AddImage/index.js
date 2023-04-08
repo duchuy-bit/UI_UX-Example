@@ -1,9 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React,{useState, useRef} from 'react';
-import { Text, View, SafeAreaView, StyleSheet,Platform, UIManager, LayoutAnimation ,Pressable , TextInput , Image, Dimensions, TouchableOpacity, ScrollView, PermissionsAndroid} from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet,Platform,
+    UIManager, LayoutAnimation ,
+    Pressable , TextInput , Image, Dimensions, 
+    TouchableOpacity, ScrollView, PermissionsAndroid
+} from 'react-native';
+import ModalInstall from "react-native-modal"
 
-// import MapView from 'react-native-maps';
-// import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as types from "../../configs/types"
+
 import * as ImagePicker from 'react-native-image-picker';
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -11,13 +16,19 @@ if (Platform.OS === 'android') {
     }
 }
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ImagePreview from './components/ImagePreview';
 import LocationPreview from './components/LocationPreview';
+import { useDispatch, useSelector } from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
+import AnimatedLottieView from 'lottie-react-native';
 
 function AddImageScreen(){
 
     const [isTouchInput , setIsTouchInput ] = useState(false);
     const inputUrlRef = useRef()
+
+    const notes = useSelector(state => state);
+    const dispatch = useDispatch();
+
 
     const [ textUrlImage, setTextUrlImage ]= useState("");
 
@@ -62,6 +73,8 @@ function AddImageScreen(){
     const touchOpenCamera = async () =>{
         setIsTouchInput(false);
         inputUrlRef?.current?.blur();
+
+        getLocation();
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
         try {
@@ -118,9 +131,102 @@ function AddImageScreen(){
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
 
+    const touchSaveImage = () =>{
+
+        const _params = {
+            isFromCamera: isFromCamera,
+            urlImage: urlImagePreview,
+            location: position,
+            indexImage: notes.app.listImages.length,
+        }
+        // console.log(" Params: ", _params)
+
+        dispatch({ 
+            type: types.POST_ADD_IMAGES, 
+            params: _params,
+            onSuccess:  (res)=>{
+                console.log(" add Success")
+                setIsOpenModalSuccess(true);
+                setTimeout(()=>{
+                    setUrlImagePreview("");
+                    setIsOpenImagePreview(false);
+                    setTextUrlImage("")
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                }, 2000)
+            }
+        })
+    }
+
+    // const clearAll  = ()=>{
+    //     setUrlImagePreview("");
+    //         setIsOpenImagePreview(false);
+    //         setTextUrlImage("")
+    //         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    // }
+
+    const [position, setPosition] = useState({
+        latitude: 10,
+        longitude: 10,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+    });
+
+    const getLocation = () => {
+        try{
+            Geolocation.getCurrentPosition((pos) => {
+                const crd = pos.coords;
+                setPosition({
+                    latitude: crd.latitude,
+                    longitude: crd.longitude,
+                    latitudeDelta: 0.0421,
+                    longitudeDelta: 0.0421,
+                });
+            })
+        }catch(err){
+            console.log(" error Geolocation.getCurrentPosition  ", err)
+        }
+    }
+
+    const [ isOpenModal, setIsOpenModal ] = useState(false);
+
+    const [ isOpenModalSuccess, setIsOpenModalSuccess ] = useState(false);
 
     return(
         <SafeAreaView style={{flex: 1 , backgroundColor: '#FFFFFF'}}>
+
+        {/* ================================= MODLA IMAGE ADD SUCCESS ======================================= */}
+        <ModalInstall isVisible={isOpenModalSuccess} animationIn="zoomInUp" animationOut="zoomOutUp"
+            onBackdropPress={() => setIsOpenModalSuccess(false)} onSwipeComplete={() => setIsOpenModalSuccess(false)}
+            onRequestClose={() => setIsOpenModalSuccess(false)}
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+        >
+            <View style={{width: "80%", backgroundColor:'white', borderRadius: 30,justifyContent: 'center', alignItems: 'center', paddingVertical: 20}}>
+                <AnimatedLottieView 
+                    source={require("../../images/doneLottie.json")} 
+                    style={{width: 120,height: 120}} 
+                    autoPlay
+                    loop={false}
+                />
+                <Text style={{fontSize: 20, fontWeight:'bold', color:'#10AE4B', top: -10}}>Done !</Text>
+            </View>
+        </ModalInstall> 
+
+        {/* ================================= MODLA IMAGE ERROR ======================================= */}
+        <ModalInstall isVisible={isOpenModal} animationIn="zoomInUp" animationOut="zoomOutUp"
+            onBackdropPress={() => setIsOpenModal(false)} onSwipeComplete={() => setIsOpenModal(false)}
+            onRequestClose={() => setIsOpenModal(false)}
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+        >
+            <View style={{width: "80%", backgroundColor:'white', borderRadius: 30,justifyContent: 'center', alignItems: 'center', paddingVertical: 20}}>
+                <AnimatedLottieView 
+                    source={require("../../images/errorLottie.json")} 
+                    style={{width: 120,height: 120}} 
+                    autoPlay
+                    loop={false}
+                />
+                <Text style={{fontSize: 20, fontWeight:'bold', color:'black', marginTop: 10}}>Invalid URL</Text>
+            </View>
+        </ModalInstall> 
         <ScrollView>
             {/* ======================================== HEADER ========================================   */}
             <View style={{width:'100%', flexDirection:'row',marginVertical: 20,alignItems:'center',justifyContent:'space-between', paddingHorizontal: 30}}>
@@ -150,6 +256,8 @@ function AddImageScreen(){
                                     style={{ flex: 1, marginLeft: 15, color: "black", fontSize: 16}}
                                     ref={inputUrlRef}
                                     returnKeyType='done'
+                                    placeholder='URL Image ...'
+                                    placeholderTextColor={'grey'}
                                     value={textUrlImage}
                                     onChangeText={newText => setTextUrlImage(newText)}
                                     onSubmitEditing={() => touchOKInput()}
@@ -198,10 +306,12 @@ function AddImageScreen(){
                         <Text style={{paddingLeft: 15, color:'black', fontSize:22, fontWeight:'bold',alignSelf:'flex-start',marginBottom: 10}}>          Your Image: </Text>
                         <View style={styles.imageContainer}>
                             <Image
-                                source={{uri: urlImagePreview}}
+                                source={{uri: urlImagePreview + "?v="+ new Date()}}
                                 style={styles.imageStyle}
                                 onError={(error) => {
-                                    console.log(" error load image ")
+                                    console.log(" error load image ");
+                                    setIsOpenModal(true);
+                                    setIsOpenImagePreview(false)
                                 }}
                             />
                         </View>
@@ -211,7 +321,7 @@ function AddImageScreen(){
                                 <Text style={{color:'white', fontSize:22, fontWeight:'bold'}}>Clear</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.btnSave}>
+                            <TouchableOpacity onPress={()=> touchSaveImage()} style={styles.btnSave}>
                                 <Text style={{color:'white', fontSize:22, fontWeight:'bold'}}>Save</Text>
                             </TouchableOpacity>
                         </View>
@@ -220,7 +330,7 @@ function AddImageScreen(){
 
                 {/* Location Preview */}
                 { 
-                    isFromCamera && isOpenImagePreview ? <LocationPreview />: null
+                    isFromCamera && isOpenImagePreview ? <LocationPreview position={position} />: null
                 }
 
                 

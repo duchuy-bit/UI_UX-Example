@@ -6,6 +6,8 @@ import { SharedElement } from 'react-navigation-shared-element';
 import Geolocation from '@react-native-community/geolocation';
 import openMap from 'react-native-open-maps';
 
+import Icon from "react-native-vector-icons/FontAwesome"
+import { useNavigation } from '@react-navigation/native';
 function ViewImageScreen({route}){
 
     const {item} = route.params;
@@ -46,18 +48,23 @@ function ViewImageScreen({route}){
 
     const touchOpenInGGMap =  () =>{
         try{
-            openMap({ latitude: 37.865101, longitude: -119.538330 });
+            openMap({ latitude: item?.location?.latitude, longitude: item?.location?.longitude });
             // openMap({ latitude: position.latitude, longitude: position.longitude });
         }catch (error){
             console.log("  error touchOpenInGGMap ", error)
         }
     }
+    const navigation  = useNavigation()
 
     return(
         <SafeAreaView style={{flex: 1 , backgroundColor:'white'}}>
+        
+            <TouchableOpacity onPress={()=> navigation.goBack()} style={{position:'absolute', zIndex: 2, right: 20, top: 20}}>
+                <Icon name="times-circle" size={30} color={'black'}/>
+            </TouchableOpacity>
             <SharedElement id={`item.${index}.anh`}>
                 <Image
-                    source={{uri: item}}
+                    source={{uri: item?.urlImage}}
                     resizeMode='cover'
                     style={{
                         width: Dimensions.get("screen").width,
@@ -66,25 +73,45 @@ function ViewImageScreen({route}){
                 />
             </SharedElement>
 
-            {/* -------------geographical place  ----------------- */}
-            <View style={{flex: 1}}>
-                <View style={{marginTop: 20, marginBottom: 10 , marginHorizontal: 50}}>
-                    <Text style={{color: '#7834CF', fontSize:25, fontWeight: 'bold'}}>Geographical Place:  </Text>
-                </View>
-
-                <View style={{paddingLeft: 20}}>
-                    <Text style={{color: 'black', fontSize: 20}}> <Text style={{fontWeight:'bold'}}>- Latitude:</Text> {position.latitude}</Text>
-                    <Text style={{color: 'black', fontSize: 20}}> <Text style={{fontWeight:'bold'}}>- Longitude:</Text> {position.longitude}</Text>
-                </View>
-
-                <View style={{alignItems:'center', flexDirection:'row', marginTop: 20, paddingBottom: 60}}>
-                    <View style={{flex: 1}}/>
-                    <TouchableOpacity onPress={()=>touchOpenInGGMap()} style={styles.buttonOpenmapContainer}>
-                        <Text style={{color: 'white', fontWeight:'bold', fontSize: 20}}>Open in Google Maps</Text>
-                    </TouchableOpacity>
-                    <View style={{flex: 1}}/>
-                </View>
+            {/*    DIRECTORY IMAGE */}
+            <View style={{marginTop: 40, marginBottom: 10 , alignItems:'center'}}>
+                {
+                    item.isFromCamera?
+                    <View>
+                        <Text style={{color: '#7834CF', fontSize:25, fontWeight: 'bold'}}>- Image From Mobile Camera -</Text>
+                    </View>
+                    :
+                    <View>
+                        <Text style={{color: '#7834CF', fontSize:25, fontWeight: 'bold'}}>- Image From Mobile URL -</Text>
+                    </View>
+                }
             </View>
+
+            {/* -------------geographical place  ----------------- */}
+            {
+                item.isFromCamera?
+                <View style={{flex: 1}}>
+                    <View style={{marginTop: 20, marginBottom: 10 , marginHorizontal: 50}}>
+                        <Text style={{color: '#7834CF', fontSize:25, fontWeight: 'bold'}}>Geographical Place:  </Text>
+                    </View>
+
+                    <View style={{paddingLeft: 20}}>
+                        <Text style={{color: 'black', fontSize: 20}}
+                        > <Text style={{fontWeight:'bold'}}>- Latitude:</Text> {item?.location?.latitude}</Text>
+
+                        <Text style={{color: 'black', fontSize: 20}}
+                        > <Text style={{fontWeight:'bold'}}>- Longitude:</Text> {item?.location?.latitude}</Text>
+                    </View>
+
+                    <View style={{alignItems:'center', flexDirection:'row', marginTop: 20, paddingBottom: 60}}>
+                        <View style={{flex: 1}}/>
+                        <TouchableOpacity onPress={()=>touchOpenInGGMap()} style={styles.buttonOpenmapContainer}>
+                            <Text style={{color: 'white', fontWeight:'bold', fontSize: 20}}>Open in Google Maps</Text>
+                        </TouchableOpacity>
+                        <View style={{flex: 1}}/>
+                    </View>
+                </View>: null
+            }
 
 
         </SafeAreaView>

@@ -1,4 +1,4 @@
-import React ,{useRef, useState} from 'react';
+import React ,{useRef, useState, useEffect} from 'react';
 import { FlatList, Text, View, Dimensions, StyleSheet,TouchableOpacity, Pressable } from 'react-native';
 import ItemImage from './components/ItemImage';
 
@@ -12,8 +12,12 @@ const listImages = [
 ]
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 function HomeScreen(){
+
+    const notes = useSelector(state => state);
+    const dispatch = useDispatch();
 
     const refListImage = useRef();
 
@@ -30,11 +34,24 @@ function HomeScreen(){
     }
 
     const touchNextImage = () => {
-        if (indexState + 1 < listImages.length ){
+        if (indexState + 1 < notes.app.listImages.length ){
             refListImage?.current?.scrollToIndex({ animated: true, index: indexState  + 1})
             setIndexState(indexState + 1);
         }
     }
+
+    useEffect(()=>{
+        console.log(" list Image: ",notes.app.listImages)
+    },[])
+
+
+    useEffect(()=>{
+        if(notes.app.listImages.length <= indexState && notes.app.listImages.length !== 0){
+            refListImage?.current?.scrollToIndex({ animated: true, index: notes.app.listImages.length - 1})
+        }
+            
+    },[notes.app.listImages.length])
+    
 
     return(
         <View style={{flex: 1, backgroundColor:'white', justifyContent:'center',alignItems:'center' }}>
@@ -43,7 +60,7 @@ function HomeScreen(){
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={listImages}
+                    data={notes.app.listImages}
                     pagingEnabled
                     ref={refListImage}
                     renderItem={({item, index})=><ItemImage item={item} index={index} indexState={indexState}/>}
@@ -76,9 +93,17 @@ function HomeScreen(){
 
             {/* Next Image */}
                 <TouchableOpacity 
-                    disabled={indexScroll === listImages.length - 1 ? true: false} 
+                    disabled={
+                        indexScroll >= notes.app.listImages.length - 1 
+                        || 
+                        notes.app.listImages.length == 0 
+                        ? true: false} 
                     onPress={()=> touchNextImage()} 
-                    style={[styles.buttonMoveImageRight,{ opacity: indexScroll === listImages.length - 1 ? 0.5: 1 }]}
+                    style={[styles.buttonMoveImageRight,{ opacity: 
+                        indexScroll >= notes.app.listImages.length - 1 
+                            ||
+                        notes.app.listImages.length == 0  
+                        ? 0.5: 1 }]}
                 >
                     <Icon name="caret-right" size={30} color="white" />
                 </TouchableOpacity>

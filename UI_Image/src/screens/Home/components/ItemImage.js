@@ -11,9 +11,18 @@ if (Platform.OS === 'android') {
 }
 import Icon from 'react-native-vector-icons/FontAwesome';
 // trash-o
+
+
+import * as types from "../../../configs/types"
+import { useDispatch, useSelector } from 'react-redux';
+
 function ItemImage({item, index, indexState}){
 
     const navigation = useNavigation();
+
+
+    const notes = useSelector(state => state);
+    const dispatch = useDispatch();
 
     const [ isOpenDelete , setIsOpenDelete ]  = useState(false)
 
@@ -24,11 +33,16 @@ function ItemImage({item, index, indexState}){
 
     useEffect(()=>{
         setIsOpenDelete(false);
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }, [indexState])
 
     const touchDeleteImage = () =>{
-
+        dispatch({  type: types.POST_DELETE_IMAGES, params:{indexDelete: item.indexImage},
+            onSuccess: (res)=>{
+                setIsOpenDelete(false);
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+            }
+        })
     }
 
     return(
@@ -45,7 +59,7 @@ function ItemImage({item, index, indexState}){
             >
                 <SharedElement id={`item.${index}.anh`}>
                     <Image
-                        source={{uri: item}}
+                        source={{uri: item?.urlImage}}
                         // resizeMode='center'
                         style={styles.imageStyle}
                     />

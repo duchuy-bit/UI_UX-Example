@@ -7,43 +7,35 @@ import openMap from 'react-native-open-maps';
 
 import Fontisto from "react-native-vector-icons/Fontisto"
 
-function LocationPreview(){
-
-    const [position, setPosition] = useState({
-        latitude: 10,
-        longitude: 10,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
-    });
-
+function LocationPreview(props){
 
     const [ isLoading, setIsLoading ] = useState(true)
     
     
-    useEffect(() => {
-        try{
-            Geolocation.getCurrentPosition((pos) => {
-                const crd = pos.coords;
-                setIsLoading(false)
-                setPosition({
-                    latitude: crd.latitude,
-                    longitude: crd.longitude,
-                    latitudeDelta: 0.0421,
-                    longitudeDelta: 0.0421,
-                });
-            })
-        }catch(err){
-            console.log(" error Geolocation.getCurrentPosition  ", err)
-        }
+    // useEffect(() => {
+    //     try{
+    //         Geolocation.getCurrentPosition((pos) => {
+    //             const crd = pos.coords;
+    //             setIsLoading(false)
+    //             setPosition({
+    //                 latitude: crd.latitude,
+    //                 longitude: crd.longitude,
+    //                 latitudeDelta: 0.0421,
+    //                 longitudeDelta: 0.0421,
+    //             });
+    //         })
+    //     }catch(err){
+    //         console.log(" error Geolocation.getCurrentPosition  ", err)
+    //     }
         
-    }, []);
+    // }, []);
 
 
     
 
     const touchOpenInGGMap =  () =>{
         try{
-            openMap({ latitude: position.latitude, longitude: position.longitude });
+            openMap({ latitude: props?.position?.latitude, longitude: props?.position?.longitude });
         }catch (error){
             console.log("  error touchOpenInGGMap ", error)
         }
@@ -64,8 +56,8 @@ function LocationPreview(){
                 </TouchableOpacity>
                 {/*     ------------------ Detail Location ------------------ */}
                 <View style={{flex: 1 , }}>
-                    <Text style={{color: 'black', fontSize: 20}}> Latitude: {position.latitude}</Text>
-                    <Text style={{color: 'black', fontSize: 20}}> Longitude: {position.longitude}</Text>
+                    <Text style={{color: 'black', fontSize: 20}}> Latitude: {props?.position?.latitude}</Text>
+                    <Text style={{color: 'black', fontSize: 20}}> Longitude: {props?.position?.longitude}</Text>
                 </View>
             </View>
         </View>
