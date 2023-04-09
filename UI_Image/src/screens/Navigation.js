@@ -15,7 +15,6 @@ enableScreens();
 import HomeScreen from './Home';
 import ViewImageScreen from './ViewImage';
 import AddImageScreen from './AddImage';
-// const Stack = createNativeStackNavigator();
 const Stack = createSharedElementStackNavigator();
 
 function MainNavigation (){

@@ -26,6 +26,7 @@ function ItemImage({item, index, indexState}){
 
     const [ isOpenDelete , setIsOpenDelete ]  = useState(false)
 
+    //  Sự kiện Open Button Delete khi Long Press 300 miliseconds
     const touchOpenDelete = () => {
         setIsOpenDelete(true)
         LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -36,11 +37,14 @@ function ItemImage({item, index, indexState}){
         // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }, [indexState])
 
+
+    //  Gọi sự kiện xóa ảnh trong Saga, tham số truyền vào là index của ảnh
+    //  index truyền vào sẽ được so sánh trong hàm filter ở Delete Image trong Reducer
     const touchDeleteImage = () =>{
         dispatch({  type: types.POST_DELETE_IMAGES, params:{indexDelete: item.indexImage},
             onSuccess: (res)=>{
                 setIsOpenDelete(false);
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             }
         })
     }
@@ -60,7 +64,6 @@ function ItemImage({item, index, indexState}){
                 <SharedElement id={`item.${index}.anh`}>
                     <Image
                         source={{uri: item?.urlImage}}
-                        // resizeMode='center'
                         style={styles.imageStyle}
                     />
                 </SharedElement>

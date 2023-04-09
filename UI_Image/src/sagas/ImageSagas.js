@@ -6,14 +6,13 @@ import { callAPI, callError, callNomal } from './CallEffects';
 export function* _addImage(action) {
     try {
         //--------------------------------------
-
+        //  gọi action để trở đến Reducer Add Image
         console.log(" action?.params _addImage ",action?.params)
         yield put(setAddImage(action?.params))
 
         if (action.onSuccess)
             yield action.onSuccess(true);
     } catch (error) {
-        // yield callError(error, action);
         console.log(" error AddImage: ",error)
     }
 }
@@ -21,14 +20,13 @@ export function* _addImage(action) {
 export function* _deleteImage(action) {
     try {
         //--------------------------------------
-
+        //  gọi action để trở đến Reducer Delete Image
         console.log(" action?.params _deleteImage ",action?.params)
         yield put(setDeleteImage(action?.params))
 
         if (action.onSuccess)
             yield action.onSuccess(true);
     } catch (error) {
-        // yield callError(error, action);
         console.log(" error _deleteImage: ",error)
     }
 }

@@ -5,29 +5,20 @@ const imagesReducer = (state = appState.app, action) => {
     switch (action.type) {
         case types.SET_ADD_IMAGES:
             console.log("dataAdd:  - ", action.dataAdd)
-            // console.log(" state.listImages: ",[state.listImages].concat([action.dataAdd]))
+            //  Thêm Ảnh  - hàm concat: nối 2 mảng với nhau.
             return {
                 ...state,
                 listImages: state.listImages.concat([action.dataAdd])
-                // listImages: state.listImages.push(action.dataAdd)
-                // listImages: [action.dataAdd]
             };
     
         case types.SET_DELETE_IMAGES:
             console.log("index Delete:  - ", action.indexDelete)
-            // let tam = state.listImages.filter(function(item){
-            //     if(item.indexImage != action.indexDelete.indexDelete ){
-            //         console.log(" index ", item.indexImage," ",action.indexDelete.indexDelete)
-            //     }
-                
-            //     return item.indexImage != action.indexDelete.indexDelete;
-            // })
-            // console.log(" state.listImages: ",tam)
+            //  Thêm Ảnh  - hàm filter: lọc mảng: 
+                // - khi so sánh bằng true thì sẽ loại bỏ item đó
+                // - khi so sánh bằng false thì sẽ giữ lại item đó
             return {
                 ...state,
                 listImages: state.listImages.filter(item => item.indexImage !== action.indexDelete.indexDelete)
-                // listImages: state.listImages.push(action.dataAdd)
-                // listImages: [action.dataAdd]
             };
         //=================DEFAULT =======================
         default:

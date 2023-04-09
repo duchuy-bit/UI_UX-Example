@@ -26,6 +26,9 @@ function HomeScreen(){
     const [indexState,  setIndexState ] = useState(0);
     const [indexScroll,  setIndexScroll] = useState(0);
 
+    // nhấn button xem ảnh phía  bên trái.
+    // nếu ảnh không phải là ảnh đầu tiên thì vẫn có thể bấm button lần nữa
+    // nếu không thì disable button đi.
     const touchPreviousImage = () => {
         if (indexState - 1 >= 0 ){
             refListImage?.current?.scrollToIndex({ animated: true, index: indexState - 1 })
@@ -33,6 +36,9 @@ function HomeScreen(){
         }
     }
 
+    // nhấn button xem ảnh phía  bên phải.
+    // nếu ảnh không phải là ảnh cuối cùng thì vẫn có thể bấm button lần nữa
+    // nếu không thì disable button đi.
     const touchNextImage = () => {
         if (indexState + 1 < notes.app.listImages.length ){
             refListImage?.current?.scrollToIndex({ animated: true, index: indexState  + 1})
@@ -44,12 +50,11 @@ function HomeScreen(){
         console.log(" list Image: ",notes.app.listImages)
     },[])
 
-
+    //  tự động  scroll list Image  khi  xóa ảnh.
     useEffect(()=>{
         if(notes.app.listImages.length <= indexState && notes.app.listImages.length !== 0){
             refListImage?.current?.scrollToIndex({ animated: true, index: notes.app.listImages.length - 1})
         }
-            
     },[notes.app.listImages.length])
     
 

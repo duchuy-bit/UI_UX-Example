@@ -25,27 +25,7 @@ function ViewImageScreen({route}){
     const [ isLoading, setIsLoading ] = useState(true)
     
     
-    useEffect(() => {
-        try{
-            Geolocation.getCurrentPosition((pos) => {
-                const crd = pos.coords;
-                setIsLoading(false)
-                setPosition({
-                    latitude: crd.latitude,
-                    longitude: crd.longitude,
-                    latitudeDelta: 0.0421,
-                    longitudeDelta: 0.0421,
-                });
-            })
-        }catch(err){
-            console.log(" error Geolocation.getCurrentPosition  ", err)
-        }
-        
-    }, []);
-
-
-    
-
+    //  Xem vị trí địa  lý đã lưu bằng  google Map
     const touchOpenInGGMap =  () =>{
         try{
             openMap({ latitude: item?.location?.latitude, longitude: item?.location?.longitude });

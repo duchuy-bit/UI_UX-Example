@@ -70,6 +70,8 @@ function AddImageScreen(){
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
 
+    // Yêu cầu cấp quyền truy cập Camera 
+    //  Mở Camera, Sau khi chụp thành công, sẽ lưu vào bộ  nhớ của  thiết bị.
     const touchOpenCamera = async () =>{
         setIsTouchInput(false);
         inputUrlRef?.current?.blur();
@@ -94,7 +96,7 @@ function AddImageScreen(){
                     mediaType: 'photo',
                     includeBase64: false,
                     maxHeight: 5000,
-                    quality:1,
+                    quality: 1,
                     saveToPhotos: true
                 },
                     (response) => {
@@ -125,26 +127,28 @@ function AddImageScreen(){
         }
     }
 
+    // Clear state hiện tại
     const touchClearImagePreview = () =>{
-        setUrlImagePreview("ao.com");
+        setUrlImagePreview("");
         setIsOpenImagePreview(false)
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
 
+    // Lưu ảnh
     const touchSaveImage = () =>{
-
         const _params = {
-            isFromCamera: isFromCamera,
-            urlImage: urlImagePreview,
-            location: position,
-            indexImage: notes.app.listImages.length,
+            isFromCamera: isFromCamera, //Check xem ảnh từ camera hay URL: true - false
+            urlImage: urlImagePreview,  // đường dẫn của ảnh
+            location: position,         // vi trí địa lý
+            indexImage: notes.app.listImages.length,    // chỉ mục của ảnh, để so sánh  khi xóa ảnh
         }
-        // console.log(" Params: ", _params)
 
+        // gọi action thêm ảnh trong saga
         dispatch({ 
             type: types.POST_ADD_IMAGES, 
             params: _params,
             onSuccess:  (res)=>{
+                // Thêm thành công ...
                 console.log(" add Success")
                 setIsOpenModalSuccess(true);
                 setTimeout(()=>{
@@ -157,12 +161,6 @@ function AddImageScreen(){
         })
     }
 
-    // const clearAll  = ()=>{
-    //     setUrlImagePreview("");
-    //         setIsOpenImagePreview(false);
-    //         setTextUrlImage("")
-    //         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    // }
 
     const [position, setPosition] = useState({
         latitude: 10,
@@ -171,6 +169,7 @@ function AddImageScreen(){
         longitudeDelta: 0.001,
     });
 
+    // Yêu cầu cấp quyền truy cập vị trí địa lý  và Lấy vị trí địa lý hiện tại
     const getLocation = () => {
         try{
             Geolocation.getCurrentPosition((pos) => {
@@ -194,7 +193,7 @@ function AddImageScreen(){
     return(
         <SafeAreaView style={{flex: 1 , backgroundColor: '#FFFFFF'}}>
 
-        {/* ================================= MODLA IMAGE ADD SUCCESS ======================================= */}
+        {/* ================================= MODAL IMAGE ADD SUCCESS ======================================= */}
         <ModalInstall isVisible={isOpenModalSuccess} animationIn="zoomInUp" animationOut="zoomOutUp"
             onBackdropPress={() => setIsOpenModalSuccess(false)} onSwipeComplete={() => setIsOpenModalSuccess(false)}
             onRequestClose={() => setIsOpenModalSuccess(false)}
@@ -227,6 +226,7 @@ function AddImageScreen(){
                 <Text style={{fontSize: 20, fontWeight:'bold', color:'black', marginTop: 10}}>Invalid URL</Text>
             </View>
         </ModalInstall> 
+        
         <ScrollView>
             {/* ======================================== HEADER ========================================   */}
             <View style={{width:'100%', flexDirection:'row',marginVertical: 20,alignItems:'center',justifyContent:'space-between', paddingHorizontal: 30}}>
@@ -309,6 +309,7 @@ function AddImageScreen(){
                                 source={{uri: urlImagePreview + "?v="+ new Date()}}
                                 style={styles.imageStyle}
                                 onError={(error) => {
+                                    // khi đường dẫn Nhập vào bị lỗi. không truy cập được
                                     console.log(" error load image ");
                                     setIsOpenModal(true);
                                     setIsOpenImagePreview(false)
@@ -329,6 +330,7 @@ function AddImageScreen(){
                 }
 
                 {/* Location Preview */}
+                {/* chỉ hiển thị vị trí địa lý khi Chụp ảnh bằng Camera */}
                 { 
                     isFromCamera && isOpenImagePreview ? <LocationPreview position={position} />: null
                 }
