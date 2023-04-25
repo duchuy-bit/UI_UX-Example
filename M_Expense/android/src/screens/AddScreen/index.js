@@ -40,7 +40,8 @@ function AddScreen(){
     const [ dateFrom, setDateFrom ] = useState("");
     const [ dateTo, setDateTo ] = useState("");
     const [ type, setType ] = useState("");
-    const [ risk, setRisk ] = useState(true);
+    const [ risk, setRisk ] = useState(false);
+    const [ important, setImportant ] = useState(false);
     const [ description, setDescription ] = useState("");
 
     const [isOpenModalSuccess, setIsOpenModalSuccess] = useState(false)
@@ -50,13 +51,13 @@ function AddScreen(){
     const [openDatePickerTo , setOpenDatePickerTo] = useState(false);
 
 
-    const touchRiskYes = () =>{
-        setRisk(true);
+    const touchRisk = () =>{
+        setRisk(!risk);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
-    const touchRiskNo = () =>{
-        setRisk(false);
+    const touchImportant = () =>{
+        setImportant(!important);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
@@ -71,14 +72,14 @@ function AddScreen(){
             tx.executeSql(
                 "CREATE TABLE IF NOT EXISTS "
                 +"TRAVEL"
-                +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, DESTINATION TEXT, DATEFROM TEXT, DATETO TEXT, TYPE TEXT, RISK TEXT, DESCRIPTION TEXT);"
+                +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, DESTINATION TEXT, DATEFROM TEXT, DATETO TEXT, TYPE TEXT, RISK TEXT, IMPORTANT TEXT, DESCRIPTION TEXT);"
             ),
             // Query INSERT
             tx.executeSql(
-                "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , DESCRIPTION) "
+                "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , IMPORTANT, DESCRIPTION) "
                 +"VALUES ('"+name+"' , '"+destination+"'  , '"+dateFrom.getDate()+"/"+monthFrom+"/"+dateFrom.getFullYear()+"', '"
                 +
-                dateTo.getDate()+"/"+monthTo+"/"+dateTo.getFullYear()+"'  , '"+type+"'  , '"+risk+"'  , '"+description+"'   );"
+                dateTo.getDate()+"/"+monthTo+"/"+dateTo.getFullYear()+"'  , '"+type+"'  , '"+risk+"'  , '"+important+"'  , '"+description+"'   );"
             )
         },
         // Inser Erro
@@ -102,8 +103,7 @@ function AddScreen(){
             destination !=="" &&
             dateFrom !=="" &&
             dateTo !=="" &&
-            type !=="" &&
-            description !==""
+            type !=="" 
         ){
             // OK -> Insert
             insertToSQLite();
@@ -241,7 +241,7 @@ function AddScreen(){
                 <View style={{flexDirection:'row', paddingHorizontal: 60, alignItems:'center',marginTop:25, justifyContent:'space-around' ,}}>
                     <View style={{flex: 1 , flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal: 10}}>
                         {/* BTN YES */}
-                        <Pressable onPress={()=> touchRiskYes()} style={{flexDirection:'row', alignItems:'center'}}>
+                        <Pressable onPress={()=> touchRisk()} style={{flexDirection:'row', alignItems:'center'}}>
                             <View style={{borderRadius: 100, alignItems:'center',justifyContent:'center', height: 22 , width: 22, borderColor:'white', borderWidth: 1}}>
                                 {
                                     risk ? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
@@ -252,10 +252,10 @@ function AddScreen(){
                         </Pressable>
 
                         {/* BTN NO */}
-                        <Pressable onPress={()=> touchRiskNo()} style={{flexDirection:'row', alignItems:'center'}}>
+                        <Pressable onPress={()=> touchImportant()} style={{flexDirection:'row', alignItems:'center'}}>
                             <View style={{borderRadius: 100, alignItems:'center',justifyContent:'center', height: 22 , width: 22, borderColor:'white', borderWidth: 1}}>
                                 {
-                                    risk ===false? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
+                                    important ===true? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
                                     : null
                                 }
                             </View>

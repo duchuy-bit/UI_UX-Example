@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { SafeAreaView, Text, View , StyleSheet, Pressable, FlatList, Image, RefreshControl, TextInput, Alert} from 'react-native';
 
+
+import { useIsFocused } from '@react-navigation/native';
+
+
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import colors from '../../colors/colors';
 
@@ -26,6 +30,15 @@ const db = SQLite.openDatabase(
 function  HomeScreen (){
 
     const navigation = useNavigation();
+
+
+    const isFocused = useIsFocused();
+
+
+    useEffect(()=>{
+        getDataFromSQLite();
+        console.log("Screen is Forcus ",isFocused)
+    },[isFocused])
 
     // ReFresh When PULL DOWN
     const [refreshing, setRefreshing] = useState(false);

@@ -47,6 +47,7 @@ function ViewScreen({route}){
     const [ dateTo, setDateTo ] = useState("");
     const [ type, setType ] = useState(item.TYPE);
     const [ risk, setRisk ] = useState(item.RISK === 'true'? true: false);
+    const [ important, setImportant ] = useState(item.IMPORTANT === 'true'? true: false);
     const [ description, setDescription ] = useState(item.DESCRIPTION);
 
     const [isOpenModalSuccess, setIsOpenModalSuccess] = useState(false)
@@ -55,13 +56,13 @@ function ViewScreen({route}){
     const [openDatePickerFrom , setOpenDatePickerFrom] = useState(false);
     const [openDatePickerTo , setOpenDatePickerTo] = useState(false);
 
-    const touchRiskYes = () =>{
-        setRisk(true);
+    const touchRisk = () =>{
+        setRisk(!risk);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
-    const touchRiskNo = () =>{
-        setRisk(false);
+    const touchImportant = () =>{
+        setImportant(!important);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
@@ -79,7 +80,7 @@ function ViewScreen({route}){
                 "UPDATE  "
                 +"TRAVEL"
                 +" SET NAME = '"+name+"' , DESTINATION = '"+destination+"' , DATEFROM ='"+dateFromTam+"', DATETO ='" + dateFromTo+"' ,"
-                + " TYPE  ='"+type+"', RISK = '"+risk+"', DESCRIPTION ='"+description+"' "
+                + " TYPE  ='"+type+"', RISK = '"+risk+"',IMPORTANT = '"+important+"', DESCRIPTION ='"+description+"' "
                 +" WHERE ID = " + item.ID +";"
             )
         },
@@ -101,8 +102,7 @@ function ViewScreen({route}){
         // Check Empty
         if ( name !=="" &&
             destination !=="" &&
-            type !=="" &&
-            description !==""
+            type !=="" 
         ){
             // If OK=> Update
             insertToSQLite();
@@ -263,7 +263,7 @@ function ViewScreen({route}){
                 <View style={{flexDirection:'row', paddingHorizontal: 60, alignItems:'center',marginTop:25, justifyContent:'space-around' ,}}>
                     <View style={{flex: 1 , flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal: 10}}>
                         {/* BTN YES */}
-                        <Pressable onPress={()=> touchRiskYes()} style={{flexDirection:'row', alignItems:'center'}}>
+                        <Pressable onPress={()=> touchRisk()} style={{flexDirection:'row', alignItems:'center'}}>
                             <View style={{borderRadius: 100, alignItems:'center',justifyContent:'center', height: 22 , width: 22, borderColor:'white', borderWidth: 1}}>
                                 {
                                     risk ? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
@@ -274,10 +274,10 @@ function ViewScreen({route}){
                         </Pressable>
 
                         {/* BTN NO */}
-                        <Pressable onPress={()=> touchRiskNo()} style={{flexDirection:'row', alignItems:'center'}}>
+                        <Pressable onPress={()=> touchImportant()} style={{flexDirection:'row', alignItems:'center'}}>
                             <View style={{borderRadius: 100, alignItems:'center',justifyContent:'center', height: 22 , width: 22, borderColor:'white', borderWidth: 1}}>
                                 {
-                                    risk ===false? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
+                                    important? <View style={{height: 17, width: 17, backgroundColor:'white', borderRadius: 100}}/>
                                     : null
                                 }
                             </View>
