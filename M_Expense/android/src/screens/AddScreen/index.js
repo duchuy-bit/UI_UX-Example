@@ -22,10 +22,10 @@ import SQLite  from "react-native-sqlite-storage"
 import DatePicker from 'react-native-date-picker';
 import AnimatedLottieView from 'lottie-react-native';
 
+// connect To SQLite
 const db = SQLite.openDatabase(
     {
         name: "MainDB",
-        // name: 'common',
         createFromLocation: 2, location: 'Library'
     },
     () =>{
@@ -35,7 +35,6 @@ const db = SQLite.openDatabase(
 )
 
 function AddScreen(){
-    const [ urlImage, setUrlImage ] = useState("");
     const [ name, setName ] = useState("");
     const [ destination, setDestination ] = useState("");
     const [ dateFrom, setDateFrom ] = useState("");
@@ -50,6 +49,7 @@ function AddScreen(){
     const [openDatePickerFrom , setOpenDatePickerFrom] = useState(false);
     const [openDatePickerTo , setOpenDatePickerTo] = useState(false);
 
+
     const touchRiskYes = () =>{
         setRisk(true);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
@@ -60,30 +60,20 @@ function AddScreen(){
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
-    const touchPickImage =()=>{
-        Alert.alert("Upload Photo", " Select attechments photo",[
-            {text: "cancel", onPress: ()=>console.log("Cancle")},
-            {text: "Open Camera", onPress: ()=>openCamera()},
-            {text: "Choose From Library", onPress: ()=>openLibrary()},
-        ])
-    }
 
-    // useEffect(()=>{
-    //     createTable();
-    // },[])
-
-
+    // Insert Data To SQLite
     const insertToSQLite = ()=>{
-        // INSERT INTO table (column1,column2 ,..)
-        // VALUES( value1,	value2 ,...);
         let monthFrom = dateFrom.getMonth() + 1
         let monthTo = dateTo.getMonth() + 1
         db.transaction((tx)=>{
+            // Check Table TRAVEL exists? 
+            // If No => Create New
             tx.executeSql(
                 "CREATE TABLE IF NOT EXISTS "
                 +"TRAVEL"
                 +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, DESTINATION TEXT, DATEFROM TEXT, DATETO TEXT, TYPE TEXT, RISK TEXT, DESCRIPTION TEXT);"
             ),
+            // Query INSERT
             tx.executeSql(
                 "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , DESCRIPTION) "
                 +"VALUES ('"+name+"' , '"+destination+"'  , '"+dateFrom.getDate()+"/"+monthFrom+"/"+dateFrom.getFullYear()+"', '"
@@ -91,19 +81,23 @@ function AddScreen(){
                 dateTo.getDate()+"/"+monthTo+"/"+dateTo.getFullYear()+"'  , '"+type+"'  , '"+risk+"'  , '"+description+"'   );"
             )
         },
+        // Inser Erro
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
             setIsOpenModalError(true)
-        }, function() {
+        }, 
+        // Insert Success
+        function() {
             console.log('Populated database OK');
             
             setIsOpenModalSuccess(true)
         })
     }
 
+    // Event touch Button Add Trip
     const touchAdd = ()=>{
+        // Check Empty 
         console.log(name!=="",destination!=="",dateFrom!=="",dateTo!=="",type!=="",description!=="");
-
         if ( name !=="" &&
             destination !=="" &&
             dateFrom !=="" &&
@@ -111,11 +105,10 @@ function AddScreen(){
             type !=="" &&
             description !==""
         ){
-            
-
+            // OK -> Insert
             insertToSQLite();
-
         }else{
+            // Empty -> Alert Warning
             setIsOpenModalError(true)
         }
     }
@@ -201,8 +194,6 @@ function AddScreen(){
                     </View>
                 </View>
 
-                
-
                 <View style={{flexDirection:'row', paddingHorizontal: 18, alignItems:'center',marginTop:15 }}>
                     <Text style={{fontSize:18, color:'white', fontWeight:'bold'}}>Date   </Text>
                     <Text style={{fontSize:18, color:'white',}}>From  </Text>
@@ -279,7 +270,6 @@ function AddScreen(){
                     <Text style={{fontSize:15, color:'black', fontWeight:'bold'}}>ADD TRIP</Text>
                 </Pressable>
             </View>
-
 
             <View style={{height: 30}}/>
         </ScrollView>

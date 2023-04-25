@@ -22,10 +22,11 @@ import SQLite  from "react-native-sqlite-storage"
 import DatePicker from 'react-native-date-picker';
 import AnimatedLottieView from 'lottie-react-native';
 
+
+// connect To Database Sqlite
 const db = SQLite.openDatabase(
     {
         name: "MainDB",
-        // name: 'common',
         createFromLocation: 2, location: 'Library'
     },
     () =>{
@@ -64,19 +65,15 @@ function ViewScreen({route}){
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
-
+    // Update Data to SQlite
     const insertToSQLite = ()=>{
-        // INSERT INTO table (column1,column2 ,..)
-        // VALUES( value1,	value2 ,...);
-
         let monthFrom = dateFrom === ""? 0 : dateFrom.getMonth() + 1 
         let monthTo = dateTo === ""? 0 :dateTo.getMonth() + 1
 
         const dateFromTam = dateFrom === ""? item.DATEFROM : dateFrom.getDate()+"/" +monthFrom+ "/" + dateFrom.getFullYear()
         const dateFromTo = dateTo === ""? item.DATETO : dateTo.getDate()+"/" +monthTo+ "/" + dateTo.getFullYear()
 
-        // let monthFrom = dateFrom.getMonth() + 1
-        // let monthTo = dateTo.getMonth() + 1
+        // Query UPDATE to TABLE TRAVEL
         db.transaction((tx)=>{
             tx.executeSql(
                 "UPDATE  "
@@ -85,55 +82,54 @@ function ViewScreen({route}){
                 + " TYPE  ='"+type+"', RISK = '"+risk+"', DESCRIPTION ='"+description+"' "
                 +" WHERE ID = " + item.ID +";"
             )
-            // tx.executeSql(
-            //     "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , DESCRIPTION) "
-            //     +"VALUES ('"+name+"' , '"+destination+"'  , '"+dateFromTam+"', '" + dateFromTo+"'  , '"+type+"'  , '"+risk+"'  , '"+description+"'   );"
-            // )
         },
+        //  Update Error
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
             setIsOpenModalError(true)
-        }, function() {
+        }, 
+        // Update Success
+        function() {
             console.log('Populated database OK');
             
             setIsOpenModalSuccess(true)
         })
     }
 
+    // Event Touch Update
     const touchUpdate = ()=>{
-
-        console.log(name!=="",destination!=="",type!=="",description!=="");
-
+        // Check Empty
         if ( name !=="" &&
             destination !=="" &&
             type !=="" &&
             description !==""
         ){
-            
-
+            // If OK=> Update
             insertToSQLite();
-
         }else{
+            // empty -> Alert Warning
             setIsOpenModalError(true)
         }
     }
 
     const navigation = useNavigation();
 
+    // Event when touch Delete
     const touchDelete= ()=>{
+        // Query Delete
         db.transaction((tx)=>{
             tx.executeSql(
                 "DELETE FROM  "
                 +"TRAVEL WHERE ID = "+item.ID
             )
         },
+        // Delete Error
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
-            // setIsOpenModalError(true)
-        }, function() {
+        }, 
+        // Delete Success
+        function() {
             console.log('Populated database OK');
-            
-            // setIsOpenModalSuccess(true)
         })
         navigation.goBack()
     }

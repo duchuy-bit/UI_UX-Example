@@ -23,9 +23,6 @@ function App (){
             <Stack.Screen name="HomeScreen" component={HomeScreen}  />
             <Stack.Screen name="AddScreen" component={AddScreen}  />
             <Stack.Screen name="ViewScreen" component={ViewScreen}  />
-            {/* <Stack.Screen name="HomeScreen" component={HomeScreen}  />
-            <Stack.Screen name="ViewImageScreen" component={ViewImageScreen}   />
-            <Stack.Screen name="AddImageScreen" component={AddImageScreen}   /> */}
         </Stack.Navigator>
     </NavigationContainer>
     )

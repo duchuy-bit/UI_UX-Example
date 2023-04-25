@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import SQLite  from "react-native-sqlite-storage";
 
+
+// connect to SQLite
 const db = SQLite.openDatabase(
     {
         name: "MainDB",
@@ -21,12 +23,11 @@ const db = SQLite.openDatabase(
     error => { console.log("error", error)}
 )
 
-
-
 function  HomeScreen (){
 
     const navigation = useNavigation();
 
+    // ReFresh When PULL DOWN
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = React.useCallback(() => {
@@ -36,36 +37,41 @@ function  HomeScreen (){
     }, []);
 
 
-
+    // init List Item 
     const [ listTravel , setListTravel]  =  useState([]);
 
+    // Delete One Item IN SQLite
     const deleteItemSQL  = (item)=>{
-
+        // Confirm Delete
         Alert.alert("Delete "+item.NAME+"? ", "Are you sure want to delete the trip '"+item.NAME+"'?",[
+            // Cancle Delete
             { text:"No"},
+
+            // DELETE
             {text:"YES", onPress: ()=>{
+                // SQLITE
                 db.transaction((tx)=>{
                     tx.executeSql(
                         "DELETE FROM  "
                         +"TRAVEL WHERE ID = "+item.ID
                     )
                 },
+                // Error Delete
                 function(error) {
                     console.log('Transaction ERROR: ' + error.message);
-                    // setIsOpenModalError(true)
-                }, function() {
+                },
+                // Delete Success 
+                function() {
                     console.log('Populated database OK');
-                    
-                    // setIsOpenModalSuccess(true)
                 })
                 onRefresh()
             }},
-            
         ])
-        
     }
 
+    // SEARCH SQLITE
     const searchSqLite = (text)=>{
+        // QUERY SQLITE
         db.transaction((tx)=>{
             tx.executeSql(
                 "SELECT * FROM "
@@ -73,31 +79,34 @@ function  HomeScreen (){
                 [],
                 (tx, result)=>{
                     console.log("OK")
+                    // get list query and set list item
                     var length = result.rows.length;
                     console.log('length: ',length)
                     let listTam = [];
                     for (let i=0; i< length;i++){
-                        // console.log( result.rows.item(i))
                         listTam.push(result.rows.item(i))
                     }
                     setListTravel(listTam)
                 }
             )
         },
+        // Search Error
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
-            // setIsOpenModalError(true)
-        }, function() {
+        }, 
+        // Search Success
+        function() {
             console.log('Populated database OK');
-            
-            // setIsOpenModalSuccess(true)
         })
     }
 
-
+    //  RRESET ALL DATA 
     const deleteAll  = ()=>{
+        // Confirm Delete All
         Alert.alert("Delete All? ", "Are you sure want to delete all Data?",[
+            // Cancel
             { text:"No"},
+            // Delete All
             {text:"YES", onPress: ()=>{
                 db.transaction((tx)=>{
                     tx.executeSql(
@@ -105,13 +114,13 @@ function  HomeScreen (){
                         +"TRAVEL "
                     )
                 },
+                // Delete Fail
                 function(error) {
                     console.log('Transaction ERROR: ' + error.message);
-                    // setIsOpenModalError(true)
-                }, function() {
+                }, 
+                // Delete Success
+                function() {
                     console.log('Populated database OK');
-                    
-                    // setIsOpenModalSuccess(true)
                 })
                 onRefresh()
             }},
@@ -119,7 +128,7 @@ function  HomeScreen (){
         ])
     }
 
-
+    // get Data From SQLITE
     const getDataFromSQLite = ()=>{
         db.transaction((tx)=>{
             tx.executeSql(
@@ -128,27 +137,28 @@ function  HomeScreen (){
                 [],
                 (tx, result)=>{
                     console.log("OK")
+                    // get list Query and set to list item
                     var length = result.rows.length;
                     console.log('length: ',length)
                     let listTam = [];
                     for (let i=0; i< length;i++){
-                        // console.log( result.rows.item(i))
                         listTam.push(result.rows.item(i))
                     }
                     setListTravel(listTam)
                 }
             )
         },
+        // query Error
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
-            // setIsOpenModalError(true)
-        }, function() {
+        }, 
+        // Query Success
+        function() {
             console.log('Populated database OK');
-            
-            // setIsOpenModalSuccess(true)
         })
     }
 
+    // Init data
     useEffect(()=>{
         getDataFromSQLite();
     },[])
