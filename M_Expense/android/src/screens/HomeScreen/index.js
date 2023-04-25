@@ -202,7 +202,7 @@ function  HomeScreen (){
                     <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal: 10}}>
                         <TextInput 
                             value={textSearch}
-                            style={{flex: 1, borderBottomWidth: 1, borderColor:'white'}}
+                            style={{flex: 1, borderBottomWidth: 1, borderColor:'white', color: 'white'}}
                             onChangeText={value => setTextSearch(value)}
                             returnKeyType='done'
                             onSubmitEditing={()=> searchSqLite(textSearch)}
