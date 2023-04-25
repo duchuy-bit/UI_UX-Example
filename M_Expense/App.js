@@ -9,6 +9,7 @@ import {createSharedElementStackNavigator} from 'react-navigation-shared-element
 import {enableScreens} from 'react-native-screens';
 import HomeScreen from './android/src/screens/HomeScreen';
 import AddScreen from './android/src/screens/AddScreen';
+import ViewScreen from './android/src/screens/ViewScreen';
 
 
 enableScreens();
@@ -21,6 +22,7 @@ function App (){
         <Stack.Navigator  screenOptions={{headerShown: false}} >
             <Stack.Screen name="HomeScreen" component={HomeScreen}  />
             <Stack.Screen name="AddScreen" component={AddScreen}  />
+            <Stack.Screen name="ViewScreen" component={ViewScreen}  />
             {/* <Stack.Screen name="HomeScreen" component={HomeScreen}  />
             <Stack.Screen name="ViewImageScreen" component={ViewImageScreen}   />
             <Stack.Screen name="AddImageScreen" component={AddImageScreen}   /> */}

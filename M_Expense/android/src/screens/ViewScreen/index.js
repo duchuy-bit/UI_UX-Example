@@ -34,15 +34,19 @@ const db = SQLite.openDatabase(
     error => { console.log("error", error)}
 )
 
-function AddScreen(){
-    const [ urlImage, setUrlImage ] = useState("");
-    const [ name, setName ] = useState("");
-    const [ destination, setDestination ] = useState("");
+function ViewScreen({route}){
+
+    const {item}= route.params;
+
+    console.log(item);
+    
+    const [ name, setName ] = useState(item.NAME);
+    const [ destination, setDestination ] = useState(item.DESTINATION);
     const [ dateFrom, setDateFrom ] = useState("");
     const [ dateTo, setDateTo ] = useState("");
-    const [ type, setType ] = useState("");
-    const [ risk, setRisk ] = useState(true);
-    const [ description, setDescription ] = useState("");
+    const [ type, setType ] = useState(item.TYPE);
+    const [ risk, setRisk ] = useState(item.RISK === 'true'? true: false);
+    const [ description, setDescription ] = useState(item.DESCRIPTION);
 
     const [isOpenModalSuccess, setIsOpenModalSuccess] = useState(false)
     const [isOpenModalError, setIsOpenModalError] = useState(false)
@@ -60,36 +64,31 @@ function AddScreen(){
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     }
 
-    const touchPickImage =()=>{
-        Alert.alert("Upload Photo", " Select attechments photo",[
-            {text: "cancel", onPress: ()=>console.log("Cancle")},
-            {text: "Open Camera", onPress: ()=>openCamera()},
-            {text: "Choose From Library", onPress: ()=>openLibrary()},
-        ])
-    }
-
-    // useEffect(()=>{
-    //     createTable();
-    // },[])
-
 
     const insertToSQLite = ()=>{
         // INSERT INTO table (column1,column2 ,..)
         // VALUES( value1,	value2 ,...);
-        let monthFrom = dateFrom.getMonth() + 1
-        let monthTo = dateTo.getMonth() + 1
+
+        let monthFrom = dateFrom === ""? 0 : dateFrom.getMonth() + 1 
+        let monthTo = dateTo === ""? 0 :dateTo.getMonth() + 1
+
+        const dateFromTam = dateFrom === ""? item.DATEFROM : dateFrom.getDate()+"/" +monthFrom+ "/" + dateFrom.getFullYear()
+        const dateFromTo = dateTo === ""? item.DATETO : dateTo.getDate()+"/" +monthTo+ "/" + dateTo.getFullYear()
+
+        // let monthFrom = dateFrom.getMonth() + 1
+        // let monthTo = dateTo.getMonth() + 1
         db.transaction((tx)=>{
             tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS "
+                "UPDATE  "
                 +"TRAVEL"
-                +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, DESTINATION TEXT, DATEFROM TEXT, DATETO TEXT, TYPE TEXT, RISK TEXT, DESCRIPTION TEXT);"
-            ),
-            tx.executeSql(
-                "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , DESCRIPTION) "
-                +"VALUES ('"+name+"' , '"+destination+"'  , '"+dateFrom.getDate()+"/"+monthFrom+"/"+dateFrom.getFullYear()+"', '"
-                +
-                dateTo.getDate()+"/"+monthTo+"/"+dateTo.getFullYear()+"'  , '"+type+"'  , '"+risk+"'  , '"+description+"'   );"
+                +" SET NAME = '"+name+"' , DESTINATION = '"+destination+"' , DATEFROM ='"+dateFromTam+"', DATETO ='" + dateFromTo+"' ,"
+                + " TYPE  ='"+type+"', RISK = '"+risk+"', DESCRIPTION ='"+description+"' "
+                +" WHERE ID = " + item.ID +";"
             )
+            // tx.executeSql(
+            //     "INSERT INTO TRAVEL (NAME , DESTINATION , DATEFROM , DATETO, TYPE , RISK , DESCRIPTION) "
+            //     +"VALUES ('"+name+"' , '"+destination+"'  , '"+dateFromTam+"', '" + dateFromTo+"'  , '"+type+"'  , '"+risk+"'  , '"+description+"'   );"
+            // )
         },
         function(error) {
             console.log('Transaction ERROR: ' + error.message);
@@ -101,13 +100,12 @@ function AddScreen(){
         })
     }
 
-    const touchAdd = ()=>{
-        console.log(name!=="",destination!=="",dateFrom!=="",dateTo!=="",type!=="",description!=="");
+    const touchUpdate = ()=>{
+
+        console.log(name!=="",destination!=="",type!=="",description!=="");
 
         if ( name !=="" &&
             destination !=="" &&
-            dateFrom !=="" &&
-            dateTo !=="" &&
             type !=="" &&
             description !==""
         ){
@@ -121,6 +119,25 @@ function AddScreen(){
     }
 
     const navigation = useNavigation();
+
+    const touchDelete= ()=>{
+        db.transaction((tx)=>{
+            tx.executeSql(
+                "DELETE FROM  "
+                +"TRAVEL WHERE ID = "+item.ID
+            )
+        },
+        function(error) {
+            console.log('Transaction ERROR: ' + error.message);
+            // setIsOpenModalError(true)
+        }, function() {
+            console.log('Populated database OK');
+            
+            // setIsOpenModalSuccess(true)
+        })
+        navigation.goBack()
+    }
+    
 
     return(
         <SafeAreaView style={{flex:  1, backgroundColor: 'black'}} >
@@ -210,7 +227,7 @@ function AddScreen(){
                         {
                             dateFrom!== ""? 
                             <Text style={{fontSize:15, color:'black'}}>{dateFrom.getDate()}/{dateFrom.getMonth() + 1}/{dateFrom.getFullYear()}</Text>
-                            :<Icon name="calendar" size={23} color={"black"} />
+                            : <Text style={{fontSize:15, color:'black'}}>{item.DATEFROM}</Text>
                         }
                     </Pressable>
 
@@ -219,7 +236,7 @@ function AddScreen(){
                         {
                             dateTo!== ""? 
                             <Text style={{fontSize:15, color:'black'}}>{dateTo.getDate()}/{dateTo.getMonth() + 1}/{dateTo.getFullYear()}</Text>
-                            :<Icon name="calendar" size={23} color={"black"} />
+                            :<Text style={{fontSize:15, color:'black'}}>{item.DATETO}</Text>
                         }
                     </Pressable>
                 </View>
@@ -274,9 +291,13 @@ function AddScreen(){
                 </View>
             </View>
 
-            <View style={{width:'100%', alignItems:'center', marginTop: 100}}>
-                <Pressable  onPress={()=> touchAdd()} style={{paddingHorizontal: 15 ,paddingVertical: 10, borderRadius: 8, backgroundColor:'#BE84FC'}}>
-                    <Text style={{fontSize:15, color:'black', fontWeight:'bold'}}>ADD TRIP</Text>
+            <View style={{width:'100%', alignItems:'center',flexDirection:'row', justifyContent:'space-around', marginTop: 100}}>
+                <Pressable  onPress={()=> touchUpdate()} style={{paddingHorizontal: 15 ,paddingVertical: 10, borderRadius: 8, backgroundColor:'#BE84FC'}}>
+                    <Text style={{fontSize:15, color:'black', fontWeight:'bold'}}>UPDATE TRIP</Text>
+                </Pressable>
+
+                <Pressable  onPress={()=> touchDelete()} style={{paddingHorizontal: 15 ,paddingVertical: 10, borderRadius: 8, backgroundColor:'red'}}>
+                    <Text style={{fontSize:15, color:'black', fontWeight:'bold'}}>DELETE TRIP</Text>
                 </Pressable>
             </View>
 
@@ -295,7 +316,7 @@ function AddScreen(){
             onConfirm={(date) => {
                 setOpenDatePickerFrom(false)
                 setDateFrom(date);
-                console.log(date)
+                // console.log(date.getDate())
             }}
             onCancel={() => {
                 setOpenDatePickerFrom(false)
@@ -321,4 +342,4 @@ function AddScreen(){
     )
 }
 
-export default AddScreen;
+export default ViewScreen;
