@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".detailTrip">
+
+    <TextView
+        android:id="@+id/tripdetail_Name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:padding="5dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Trip Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tripDestination_Label"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/destination_txt"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetail_Name" />
+
+    <TextView
+        android:id="@+id/tripdetail_Destination"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tripDestination_Label"
+        app:layout_constraintTop_toTopOf="@+id/tripDestination_Label" />
+
+    <TextView
+        android:id="@+id/tripdetailDate_Label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/date_txt"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripDestination_Label"
+        app:layout_constraintStart_toStartOf="@+id/tripDestination_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetail_Destination" />
+
+    <TextView
+        android:id="@+id/tripdetail_Date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Destination"
+        app:layout_constraintStart_toStartOf="@+id/tripdetail_Destination"
+        app:layout_constraintTop_toTopOf="@+id/tripdetailDate_Label" />
+
+    <TextView
+        android:id="@+id/tripType_Label"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Type"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetailDate_Label"
+        app:layout_constraintStart_toStartOf="@+id/tripdetailDate_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetail_Date" />
+
+    <TextView
+        android:id="@+id/tripdetail_Type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Date"
+        app:layout_constraintStart_toStartOf="@+id/tripdetail_Date"
+        app:layout_constraintTop_toTopOf="@+id/tripType_Label" />
+
+    <TextView
+        android:id="@+id/tripdetailRisk_Label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/risk_txt"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripType_Label"
+        app:layout_constraintStart_toStartOf="@+id/tripType_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetail_Type" />
+
+    <TextView
+        android:id="@+id/tripdetail_Risk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Type"
+        app:layout_constraintStart_toStartOf="@+id/tripdetail_Type"
+        app:layout_constraintTop_toTopOf="@+id/tripdetailRisk_Label" />
+
+    <TextView
+        android:id="@+id/tripdetailImportant_Label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Important"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetailRisk_Label"
+        app:layout_constraintStart_toStartOf="@+id/tripdetailRisk_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetailRisk_Label" />
+
+    <TextView
+        android:id="@+id/tripdetail_Important"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Risk"
+        app:layout_constraintStart_toStartOf="@+id/tripdetail_Risk"
+        app:layout_constraintTop_toTopOf="@+id/tripdetailImportant_Label" />
+
+    <TextView
+        android:id="@+id/tripdetailDescription_Label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/description_txt"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetailImportant_Label"
+        app:layout_constraintStart_toStartOf="@+id/tripdetailImportant_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetailImportant_Label" />
+
+    <TextView
+        android:id="@+id/tripdetail_Description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Destination"
+        app:layout_constraintStart_toStartOf="@+id/tripdetail_Destination"
+        app:layout_constraintTop_toTopOf="@+id/tripdetailDescription_Label" />
+
+    <Button
+        android:id="@+id/btnaddexpense"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/add_expense_txt"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tripdetail_Risk"
+        app:layout_constraintStart_toStartOf="@+id/tripdetailRisk_Label"
+        app:layout_constraintTop_toBottomOf="@+id/tripdetailRisk_Label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listExpense"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnaddexpense" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

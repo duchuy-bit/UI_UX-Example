@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">MexpenseV1</string>
+    <string name="todo">TODO</string>
+    <string name="destination_txt">Destination</string>
+    <string name="date_txt">Date</string>
+    <string name="risk_txt">Risk</string>
+    <string name="description_txt">Description</string>
+    <string name="add_expense_txt">Add Expense</string>
+    <string name="delete_all">Delete All</string>
+    <string name="type_txt">Type</string>
+    <string name="time_txt">Time</string>
+    <string name="amount_txt">Amount</string>
+    <string name="comment_txt">Comment</string>
+    <string name="cancel_txt">Cancel</string>
+</resources>
